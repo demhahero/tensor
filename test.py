@@ -53,7 +53,7 @@ def rate(K_n,x1,x2):
     #return (B/K_n) * math.log((1+((P*h)/(sigma**2 * distance))),2);
     return math.log((1+((P*h)/(sigma**2 * distance))),2);
 
-
+print("Hi Ahmed")
 
 
 #Coverage_Cell=R_c/2/(cell_Size_New);
