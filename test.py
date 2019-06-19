@@ -10,12 +10,12 @@ velocity_free = 38.8889;  # mps
 #the distribution of speed
 Mean_v=100*1000/(60*60); # m/s
 Sigma_V=10*1.6*1000/(60*60);
-Roh=2/1000;    # number of vehicles per meter (Density)
+Roh=10/1000;    # number of vehicles per meter (Density)
 density = Roh;
 Lamda=Roh*Mean_v;
-MEMORY_CAPACITY = 1000
+MEMORY_CAPACITY = 50
 
-T=2500;
+T=100;
 Dim_Area=570;
 Rotor_speed=100;
 Blade_dimension=570;
@@ -49,11 +49,11 @@ def rate(K_n,x1,x2):
     h=10**-5
     B=1;
     sigma = 10**-12;
-    distance = ((x1-x2)**2 + 10000)**(1/2);
+    distance = ((x1-x2)**2 + 400)**(1/2);
     #return (B/K_n) * math.log((1+((P*h)/(sigma**2 * distance))),2);
-    return math.log((1+((P*h)/(sigma**2 * distance))),2);
+    return math.log((1+((P*h)/(sigma * (distance**2)))),2);
 
-print("Hi Ahmed")
+
 
 
 #Coverage_Cell=R_c/2/(cell_Size_New);
@@ -62,7 +62,15 @@ print("Hi Ahmed")
 
 
 arr= np.random.poisson(Lamda, size=int(N));
-print(arr)
+
+
+#Customized data
+for i in range(N):
+    arr[i] = 0;
+arr[0] = 1;
+
+
+
 K = sum(arr);
 
 speed = [0] * K
@@ -84,6 +92,7 @@ for val in arr:
 
     counter4 = counter4 + 1
     counter1 = counter2
+
 
 
 
@@ -113,6 +122,7 @@ for i in range(K):
 #     f1.write("\n")
 # f1.close()
 
+
 a = 0 ;
 
 C = [[0 for x in range(K)] for y in range(N)]   # Reward
@@ -138,10 +148,11 @@ ddpg = DDPG_Class.DDPG(a_dim, s_dim, a_bound)
 #                 r = r + C[n][i]
 
 
-MAX_EPISODES=1000
-var = 40  # control exploration
+MAX_EPISODES=500
+var = 60  # control exploration
+all_ep_reward = [0]*MAX_EPISODES;
 for i in range(MAX_EPISODES):
-    print("\n\n\n\n ***********************Episode "+str(i)+"**************** \n\n\n\n")
+    print("\n\n***********************Episode "+str(i)+"**************** \n\n")
     s = [0]*s_dim
 
     ep_reward = 0
@@ -155,7 +166,7 @@ for i in range(MAX_EPISODES):
         a = np.clip(np.random.normal(a, var), -50, 50)  # add randomness to action selection for exploration
         #a = np.clip(np.random.normal(a, var), -2, 2)    # add randomness to action selection for exploration
         current_uav_position += a[0];
-
+        print(str(current_uav_position) + " , ");
         immediate_cars_counter=0;
         for i in range(K):
             number_of_vehicles = 0;
@@ -168,7 +179,7 @@ for i in range(MAX_EPISODES):
 
             if(Matrix[n][i]!=math.inf):
                 #print(a[0])
-                if(rate(number_of_vehicles, Matrix[n][i], current_uav_position) >= 10):
+                if(rate(number_of_vehicles, Matrix[n][i], current_uav_position) >= 8.43):
                     env[immediate_cars_counter] = 1;
                     r = r + env[immediate_cars_counter]
                 else:
@@ -192,4 +203,7 @@ for i in range(MAX_EPISODES):
 
         s = s_
         ep_reward += r
-    print(ep_reward);
+    all_ep_reward.append(ep_reward)
+    print("\n Total Reward: " + str(ep_reward));
+
+    print("\n\n\n Best Reward was:"+str(max(all_ep_reward)));
