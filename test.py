@@ -13,9 +13,9 @@ Sigma_V=10*1.6*1000/(60*60);
 Roh=2/1000;    # number of vehicles per meter (Density)
 density = Roh;
 Lamda=Roh*Mean_v;
-MEMORY_CAPACITY = 100
+MEMORY_CAPACITY = 1000
 
-T=100;
+T=2500;
 Dim_Area=570;
 Rotor_speed=100;
 Blade_dimension=570;
