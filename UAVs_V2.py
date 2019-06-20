@@ -95,21 +95,19 @@ for i in range(K):
         elif(Matrix[n-1][i] != math.inf and Matrix[n-1][i]+ speed[i] >= Highway_distance):
             passed = True;
             Matrix[n][i] = math.inf;
-        elif(Matrix[n-1][i] == math.inf):
-            Matrix[n - 1][i] = 0
-            Matrix[n][i] = Matrix[n - 1][i] + speed[i];
+        elif(arrival_times[i] == n):
+            Matrix[n][i] = 0
         else:
             Matrix[n][i] = Matrix[n-1][i] + speed[i];
 
-            # print(Matrix)
-            #
-            # f1=open('datafile.txt', 'w')
-            # for n in range(N):
-            #     for i in range(K):
-            #         f1.write(str(Matrix[n][i])+" ")
-            #     f1.write("\n")
-            # f1.close()
 
+f1=open('datafile.txt', 'w')
+for n in range(N):
+    for i in range(K):
+        f1.write(str(Matrix[n][i])+" ")
+    f1.write("\n")
+f1.close()
+exit();
 a = 0 ;
 
 C = [[0 for x in range(K)] for y in range(N)]   # Reward
